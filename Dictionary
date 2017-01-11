@@ -1,0 +1,11 @@
+Dictionary
+
+Event: a certain event, like a deletion of 5 bases at position 5600 at chromosome 7.
+
+EventSubclass: a certain (sub)class of events, like a deletion of 3 to 7 bases.
+
+EventSize: the size of an event, in number of bases (0..infinite). 
+
+EventType: the type of an event, like DELETION or INSERTION or something else
+
+Utilities: a collection of domain-aspecific helper functions.
