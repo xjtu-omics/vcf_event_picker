@@ -6,13 +6,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Object that reads a VCF file and can return both the header and the events contained within the file.
+ * 
+ * @author Eric-Wubbo Lameijer, Xi'an Jiaotong University, eric_wubbo@hotmail.com
+ *
+ */
 public class VcfReader {
-	private List<String> header;
-	private BufferedReader reader;
-	private String currentEventLine;
+	private List<String> header; // the comment lines that form the header.
+	private BufferedReader reader; // the object that is used to read the events
+	private String nextEventLine; // the line containing the next event (starts with containing the first event)
+	private String filename; // the name of the VCF file.
 	
-public VcfReader(String filename) {
-	System.out.println("Opening " + filename);
+	/**
+	 * Constructor
+	 * 
+	 * @param filename
+	 * 	The name of the VCF file.
+	 */
+public VcfReader(String inputFilename) {
+	System.out.println("Opening " + inputFilename);
+	filename = inputFilename;
+	init();
+}
+
+/**
+ * Initializes the data
+ */
+private void init() {
 	header = new ArrayList<String>();
 	  try
 	  {
@@ -22,12 +43,12 @@ public VcfReader(String filename) {
 	    
 	    while ((line = reader.readLine()) != null)
 	    {
-System.out.println(line);
+//System.out.println(line);
 	    	if (line.startsWith("#")) {
 	    		header.add(line);
 	    	} else {
 	    		// apparently, we've reached the first event
-	    		currentEventLine = line;
+	    		nextEventLine = line;
 	    		break;
 	    	}
 	    }
@@ -55,7 +76,7 @@ public List<String> getHeader() {
  * @return whether there is a next event in the VCF file.
  */
 public boolean hasNextEvent() {
-	return (currentEventLine != null);
+	return (nextEventLine != null);
 }
 
 /**
@@ -64,7 +85,7 @@ public boolean hasNextEvent() {
  * @return the next event in the VCF file.
  */
 public Event getNextEvent() {
-	String[] eventDescriptors = currentEventLine.split("\\t");
+	String[] eventDescriptors = nextEventLine.split("\\t");
 	String referenceAllele = eventDescriptors[3];
 	String altAllele = eventDescriptors[4];
 	int refSize = referenceAllele.length();
@@ -81,16 +102,36 @@ public Event getNextEvent() {
 		eventType = EventType.UNKNOWN;
 		eventSizeAsInteger = 1;
 	}
-	
+	readNextLine();
+
+	return new Event(eventSizeAsInteger, eventType);
+}
+
+/** 
+ * Reads the next line
+ */
+private void readNextLine() {
 	try {
-		currentEventLine = reader.readLine();
+		nextEventLine = reader.readLine();
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	return new Event(eventSizeAsInteger, eventType);
 }
 
+/**
+ * Returns the next event as a line of text
+ * 
+ * @return 
+ * 		the next event as a line of text (in VCF format)
+ */
+public String getNextEventLine() {
+	String line = nextEventLine;
+	readNextLine();
+	return line;	
+}
+
+/** Closes the file. **/
 public void close() {
 	try {
 		reader.close();
@@ -98,6 +139,12 @@ public void close() {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+}
+
+/** Reopens the file, so that it can be run through for a second time. **/
+public void reopen() {
+	close();
+	init();
 }
 
 	
