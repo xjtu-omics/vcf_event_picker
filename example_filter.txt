@@ -1,0 +1,12 @@
+# Example of a filtering file for vcf_event_picker
+#
+# comment lines should start with '#'
+# generic format SVtype minsize maxsize number_to_pick
+# example DEL 4 4 10
+# (the above picks 10 deletions of size 4)
+#
+# Questions/contact: Eric-Wubbo Lameijer, Xi'an Jiaotong University, eric_wubbo@hotmail.com
+
+DEL 4 4 10
+INS 1 7 5
+

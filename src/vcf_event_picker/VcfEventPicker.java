@@ -136,7 +136,6 @@ public class VcfEventPicker {
       eventCatalogue.put(selectionDataList.get(subtypeIndex).getEventSubtype(), new ArrayList<Integer>());
     }
 
-    System.out.println("A1...");
     int eventIndex = 0;
     VcfReader vcfReader = new VcfReader(args[0]);
     while (vcfReader.hasNextEvent()) {
@@ -149,7 +148,6 @@ public class VcfEventPicker {
       }
       ++eventIndex;
     }
-    System.out.println("A2...");
 
     Random randomGenerator = new Random();
     List<Integer> selectedEventIndices = new ArrayList<Integer>();
@@ -170,15 +168,8 @@ public class VcfEventPicker {
         eventIndexList.remove(indexOfPick);
         --numberOfEvents;
       }
-      /*
-       * int secondListIndex = randomGenerator.nextInt(numberOfevents - 1); if
-       * (secondListIndex >= firstListIndex) { ++secondListIndex; }
-       */
-
-      // selectedEventIndices.add(eventIndexList.get(secondListIndex));
     }
 
-    System.out.println("A3...");
     vcfReader.reopen();
     List<String> headerLines = vcfReader.getHeader();
     BufferedWriter writer = null;
