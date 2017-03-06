@@ -17,6 +17,7 @@ public class VcfReader {
 	private BufferedReader reader; // the object that is used to read the events
 	private String nextEventLine; // the line containing the next event (starts with containing the first event)
 	private String filename; // the name of the VCF file.
+	//private int multiAltAlleleIndex;
 	
 	/**
 	 * Constructor
@@ -34,6 +35,7 @@ public VcfReader(String inputFilename) {
  * Initializes the data
  */
 private void init() {
+	//multiAltAlleleIndex = 0;
 	header = new ArrayList<String>();
 	  try
 	  {
@@ -92,7 +94,12 @@ public Event getNextEvent() {
 	int altSize = altAllele.length();
 	EventType eventType;
 	int eventSizeAsInteger;
-	if (refSize == 1 && altSize > 1) {
+	if (altAllele.contains(",")) {
+		//System.out.println(multiAltAlleleIndex + nextEventLine);
+		//multiAltAlleleIndex++;
+		eventType = EventType.UNKNOWN;
+		eventSizeAsInteger = 1;
+	} else if (refSize == 1 && altSize > 1) {
 		eventType = EventType.INSERTION;
 		eventSizeAsInteger = altSize - refSize;
 	} else if (refSize > 1 && altSize == 1) {
